@@ -1,0 +1,9 @@
+tạo trang web dùng để cho phép người dùng truy cập để đổi tiền lì xì tết ( đổi cũ thành mới có phí):
+
+1. Có giao diện hiển thị các mệnh giá tiền việt nam đồng
+2. Người dùng có thể click để truy cập thông tin chi tiết về giao dịch:
+- chọn số lượng tờ
+- địa chỉ người mua
+- ghi chú
+- Tính tổng tiền người mua phải trả theo 10 - 15 % tổng số tiền mà khách hàng muốn đổi, phải tối thiểu 1 triệu (tổng)
+- Có nút điều hướng người dùng đến zalo : 0838182780
