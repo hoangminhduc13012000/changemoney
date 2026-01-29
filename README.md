@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧧 Dịch Vụ Đổi Tiền Lì Xì Tết
 
-## Getting Started
+Ứng dụng web dịch vụ đổi tiền lì xì Tết với giao diện đẹp và tính năng quản lý đơn hàng hoàn chỉnh.
 
-First, run the development server:
+## ✨ Tính năng chính
+
+### 🏠 Trang khách hàng
+- Chọn mệnh giá tiền (10k, 20k, 50k, 100k, 200k, 500k)
+- Nhập thông tin đặt hàng (tên, SĐT, địa chỉ, ghi chú)
+- Tính toán tự động phí dịch vụ theo mệnh giá
+- Liên hệ trực tiếp qua Zalo
+
+### 👨‍💼 Trang admin
+- Xem danh sách đơn hàng
+- Đánh dấu đơn hàng hoàn tất
+- Thống kê chi tiết (doanh thu, lợi nhuận, tỷ lệ hoàn thành)
+- Xuất file Excel
+- Báo cáo tài chính
+
+### 💰 Tỷ lệ phí dịch vụ
+- **500k**: 3% phí dịch vụ
+- **200k**: 4% phí dịch vụ  
+- **100k**: 7% phí dịch vụ
+- **50k**: 13% phí dịch vụ
+- **20k**: 13% phí dịch vụ
+- **10k**: 12% phí dịch vụ
+
+## 🚀 Cài đặt và chạy
 
 ```bash
+# Clone repository
+git clone <repository-url>
+cd changemoney
+
+# Cài đặt dependencies
+npm install
+
+# Chạy development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build cho production
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📱 Liên hệ
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Zalo**: 0838182780
+- **Dịch vụ**: Đổi tiền cũ thành mới
+- **Giao hàng**: Tận nơi trong khu vực
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔧 Công nghệ sử dụng
 
-## Learn More
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **File handling**: XLSX.js
+- **Deployment**: Vercel
 
-To learn more about Next.js, take a look at the following resources:
+## 📊 Cách sử dụng
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Khách hàng**: Truy cập trang chủ → Chọn mệnh giá → Điền thông tin → Đặt hàng
+2. **Admin**: Truy cập `/admin` → Đăng nhập (admin123) → Quản lý đơn hàng
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 Demo
 
-## Deploy on Vercel
+- **Trang chủ**: [Link deploy]
+- **Admin**: [Link deploy]/admin (Password: admin123)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Made with ❤️ for Tết Nguyên Đán
