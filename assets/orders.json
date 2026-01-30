@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1769740858301",
+    "createdAt": "09:40:58 30/1/2026",
+    "denomination": 200000,
+    "denominationLabel": "200.000 ₫",
+    "quantity": 10,
+    "customerName": "ss",
+    "phoneNumber": "0812788212",
+    "subtotal": 2000000,
+    "subtotalFormatted": "2.000.000 ₫",
+    "fee": 80000,
+    "feeFormatted": "80.000 ₫",
+    "feeRate": 0.04,
+    "feePercentage": 4,
+    "total": 2080000,
+    "totalFormatted": "2.080.000 ₫",
+    "address": "sss",
+    "note": "sdsd",
+    "status": "Chờ xử lý"
+  }
+]
