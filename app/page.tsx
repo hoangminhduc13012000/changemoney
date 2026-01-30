@@ -125,17 +125,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-yellow-50 to-orange-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-red-600 to-orange-600 text-white py-8 shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
+      <header className="bg-gradient-to-r from-red-600 to-orange-600 text-white py-4 sm:py-8 shadow-lg">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center flex-1">
-              <h1 className="text-4xl font-bold mb-2">🧧 Dịch Vụ Đổi Tiền Lì Xì Tết 🧧</h1>
-              <p className="text-xl opacity-90">Đổi tiền cũ thành mới - Chào đón năm mới thịnh vượng</p>
+              <h1 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2">🧧 Dịch Vụ Đổi Tiền Lì Xì Tết 🧧</h1>
+              <p className="text-sm sm:text-xl opacity-90">Đổi tiền cũ thành mới - Chào đón năm mới thịnh vượng</p>
             </div>
             <div>
               <a
-                href="/admin"
-                className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors text-sm"
+                href="/changemoney/admin/"
+                className="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition-colors text-xs sm:text-sm"
               >
                 👨‍💼 Admin
               </a>
@@ -144,37 +144,37 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {!selectedDenomination ? (
           // Trang chính - Hiển thị các mệnh giá
           <div>
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Chọn Mệnh Giá Tiền</h2>
-              <p className="text-gray-600 text-lg">Nhấn vào mệnh giá bạn muốn đổi</p>
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-4">Chọn Mệnh Giá Tiền</h2>
+              <p className="text-gray-600 text-base sm:text-lg">Nhấn vào mệnh giá bạn muốn đổi</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-6xl mx-auto">
               {denominations.map((denom) => (
                 <div
                   key={denom.value}
                   onClick={() => handleDenominationClick(denom.value)}
-                  className={`${denom.color} p-6 rounded-xl border-2 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl`}
+                  className={`${denom.color} p-3 sm:p-6 rounded-xl border-2 cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl`}
                 >
                   <div className="text-center">
-                    <div className="text-6xl mb-4">💵</div>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{denom.label}</h3>
-                    <p className="text-gray-600">Nhấn để đổi tiền</p>
+                    <div className="text-3xl sm:text-6xl mb-2 sm:mb-4">💵</div>
+                    <h3 className="text-sm sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">{denom.label}</h3>
+                    <p className="text-xs sm:text-base text-gray-600">Nhấn để đổi tiền</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-12 bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">📋 Thông Tin Dịch Vụ</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-blue-800 mb-2">💰 Phí Dịch Vụ</h4>
-                  <div className="text-gray-700 text-sm space-y-1">
+            <div className="mt-8 sm:mt-12 bg-white rounded-xl shadow-lg p-4 sm:p-8 max-w-4xl mx-auto">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 text-center">📋 Thông Tin Dịch Vụ</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                  <h4 className="font-bold text-blue-800 mb-2 text-sm sm:text-base">💰 Phí Dịch Vụ</h4>
+                  <div className="text-gray-700 text-xs sm:text-sm space-y-1">
                     <p>• 500k: 3% phí dịch vụ</p>
                     <p>• 200k: 4% phí dịch vụ</p>
                     <p>• 100k: 7% phí dịch vụ</p>
@@ -183,17 +183,17 @@ export default function Home() {
                     <p>• 10k: 12% phí dịch vụ</p>
                   </div>
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-green-800 mb-2">📊 Đơn Hàng Tối Thiểu</h4>
-                  <p className="text-gray-700">1,000,000 VNĐ (bao gồm phí)</p>
+                <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
+                  <h4 className="font-bold text-green-800 mb-2 text-sm sm:text-base">📊 Đơn Hàng Tối Thiểu</h4>
+                  <p className="text-gray-700 text-xs sm:text-sm">1,000,000 VNĐ (bao gồm phí)</p>
                 </div>
-                <div className="bg-yellow-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-yellow-800 mb-2">🚚 Giao Hàng</h4>
-                  <p className="text-gray-700">Giao hàng tận nơi trong khu vực Bảo Lộc</p>
+                <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg">
+                  <h4 className="font-bold text-yellow-800 mb-2 text-sm sm:text-base">🚚 Giao Hàng</h4>
+                  <p className="text-gray-700 text-xs sm:text-sm">Giao hàng tận nơi trong khu vực Bảo Lộc</p>
                 </div>
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h4 className="font-bold text-purple-800 mb-2">📞 Liên Hệ</h4>
-                  <p className="text-gray-700">Zalo: 0838182780</p>
+                <div className="bg-purple-50 p-3 sm:p-4 rounded-lg">
+                  <h4 className="font-bold text-purple-800 mb-2 text-sm sm:text-base">📞 Liên Hệ</h4>
+                  <p className="text-gray-700 text-xs sm:text-sm">Zalo: 0838182780</p>
                 </div>
               </div>
             </div>  
@@ -201,57 +201,57 @@ export default function Home() {
         ) : (
           // Trang chi tiết đơn hàng
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold text-gray-800">Chi Tiết Đơn Hàng</h2>
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-3xl font-bold text-gray-800">Chi Tiết Đơn Hàng</h2>
                 <button
                   onClick={() => setSelectedDenomination(null)}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                  className="bg-gray-500 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
                 >
                   ← Quay lại
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
                 {/* Form đơn hàng */}
                 <div>
-                  <div className="mb-6 p-4 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2">
                       💵 Mệnh giá: {formatCurrency(selectedDenomination)}
                     </h3>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <label className="block text-gray-900 font-bold mb-2 text-lg">
+                      <label className="block text-gray-900 font-bold mb-2 text-base sm:text-lg">
                         Tên khách hàng: <span className="text-red-600">*</span>
                       </label>
                       <input
                         type="text"
                         value={orderDetails.customerName}
                         onChange={(e) => setOrderDetails(prev => ({ ...prev, customerName: e.target.value }))}
-                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-600"
+                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-600 text-sm sm:text-base"
                         placeholder="Nhập họ tên đầy đủ..."
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-900 font-bold mb-2 text-lg">
+                      <label className="block text-gray-900 font-bold mb-2 text-base sm:text-lg">
                         Số điện thoại: <span className="text-red-600">*</span>
                       </label>
                       <input
                         type="tel"
                         value={orderDetails.phoneNumber}
                         onChange={(e) => setOrderDetails(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-600"
+                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-600 text-sm sm:text-base"
                         placeholder="Nhập số điện thoại..."
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-900 font-bold mb-2 text-lg">
+                      <label className="block text-gray-900 font-bold mb-2 text-base sm:text-lg">
                         Số lượng tờ:
                       </label>
                       <input
@@ -259,30 +259,30 @@ export default function Home() {
                         min="1"
                         value={orderDetails.quantity}
                         onChange={(e) => setOrderDetails(prev => ({ ...prev, quantity: parseInt(e.target.value) || 1 }))}
-                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-500"
+                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-900 font-semibold bg-white placeholder-gray-500 text-sm sm:text-base"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-900 font-bold mb-2 text-lg">
+                      <label className="block text-gray-900 font-bold mb-2 text-base sm:text-lg">
                         Địa chỉ giao hàng:
                       </label>
                       <textarea
                         value={orderDetails.address}
                         onChange={(e) => setOrderDetails(prev => ({ ...prev, address: e.target.value }))}
-                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 h-24 text-gray-900 font-semibold bg-white placeholder-gray-600"
+                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 h-20 sm:h-24 text-gray-900 font-semibold bg-white placeholder-gray-600 text-sm sm:text-base"
                         placeholder="Nhập địa chỉ đầy đủ..."
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-900 font-bold mb-2 text-lg">
+                      <label className="block text-gray-900 font-bold mb-2 text-base sm:text-lg">
                         Ghi chú:
                       </label>
                       <textarea
                         value={orderDetails.note}
                         onChange={(e) => setOrderDetails(prev => ({ ...prev, note: e.target.value }))}
-                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 h-20 text-gray-900 font-semibold bg-white placeholder-gray-600"
+                        className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 h-16 sm:h-20 text-gray-900 font-semibold bg-white placeholder-gray-600 text-sm sm:text-base"
                         placeholder="Ghi chú thêm (nếu có)..."
                       />
                     </div>
@@ -291,34 +291,34 @@ export default function Home() {
 
                 {/* Tính toán chi phí */}
                 <div>
-                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4">💰 Chi Tiết Thanh Toán</h3>
+                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-4 sm:p-6 rounded-xl border border-yellow-200">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">💰 Chi Tiết Thanh Toán</h3>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Giá trị tiền đổi:</span>
-                        <span className="font-semibold">{formatCurrency(subtotal)}</span>
+                        <span className="text-gray-600 text-sm sm:text-base">Giá trị tiền đổi:</span>
+                        <span className="font-semibold text-sm sm:text-base">{formatCurrency(subtotal)}</span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Phí dịch vụ ({Math.round(feeRate * 100)}%):</span>
-                        <span className="font-semibold text-orange-600">{formatCurrency(fee)}</span>
+                        <span className="text-gray-600 text-sm sm:text-base">Phí dịch vụ ({Math.round(feeRate * 100)}%):</span>
+                        <span className="font-semibold text-orange-600 text-sm sm:text-base">{formatCurrency(fee)}</span>
                       </div>
                       
                       <hr className="border-gray-300" />
                       
-                      <div className="flex justify-between text-lg">
+                      <div className="flex justify-between text-base sm:text-lg">
                         <span className="font-bold text-gray-800">Tổng thanh toán:</span>
                         <span className="font-bold text-red-600">{formatCurrency(total)}</span>
                       </div>
                     </div>
 
                     {(!orderDetails.customerName.trim() || !orderDetails.phoneNumber.trim() || !orderDetails.address.trim() || total < 1000000) && (
-                      <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
-                        <p className="text-red-700 text-sm font-semibold">
+                      <div className="mt-3 sm:mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
+                        <p className="text-red-700 text-xs sm:text-sm font-semibold">
                           ⚠️ Vui lòng điền đầy đủ thông tin:
                         </p>
-                        <ul className="text-red-600 text-sm mt-1 ml-4">
+                        <ul className="text-red-600 text-xs sm:text-sm mt-1 ml-4">
                           {!orderDetails.customerName.trim() && <li>• Tên khách hàng</li>}
                           {!orderDetails.phoneNumber.trim() && <li>• Số điện thoại</li>}
                           {!orderDetails.address.trim() && <li>• Địa chỉ giao hàng</li>}
@@ -330,7 +330,7 @@ export default function Home() {
                     <button
                       onClick={handleZaloContact}
                       disabled={!isValidOrder || !orderDetails.address.trim()}
-                      className={`w-full mt-6 py-4 px-6 rounded-lg font-bold text-lg transition-all duration-300 ${
+                      className={`w-full mt-4 sm:mt-6 py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-bold text-sm sm:text-lg transition-all duration-300 ${
                         isValidOrder && orderDetails.address.trim()
                           ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:scale-105'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -340,9 +340,9 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                    <h4 className="font-bold text-blue-800 mb-2">📝 Lưu Ý:</h4>
-                    <ul className="text-sm text-gray-700 space-y-1">
+                  <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+                    <h4 className="font-bold text-blue-800 mb-2 text-sm sm:text-base">📝 Lưu Ý:</h4>
+                    <ul className="text-xs sm:text-sm text-gray-700 space-y-1">
                       <li>• Tiền mới 100% chất lượng</li>
                       <li>• Giao hàng trong ngày</li>
                       <li>• Thanh toán khi nhận hàng</li>
@@ -358,15 +358,15 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-xl font-bold mb-2">🧧 Dịch Vụ Đổi Tiền Lì Xì Tết</h3>
-          <p className="text-gray-300 mb-4">Uy tín - Chất lượng - Giao hàng nhanh</p>
-          <div className="flex justify-center items-center space-x-4">
-            <span className="text-yellow-400">📞 Hotline:</span>
+      <footer className="bg-gray-800 text-white py-6 sm:py-8 mt-8 sm:mt-12">
+        <div className="container mx-auto px-2 sm:px-4 text-center">
+          <h3 className="text-lg sm:text-xl font-bold mb-2">🧧 Dịch Vụ Đổi Tiền Lì Xì Tết</h3>
+          <p className="text-gray-300 mb-3 sm:mb-4 text-sm sm:text-base">Uy tín - Chất lượng - Giao hàng nhanh</p>
+          <div className="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <span className="text-yellow-400 text-sm sm:text-base">📞 Hotline:</span>
             <button
               onClick={handleZaloContact}
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base"
             >
               Zalo: 0838182780
             </button>
