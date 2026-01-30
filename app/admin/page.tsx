@@ -40,9 +40,16 @@ export default function AdminPage() {
     try {
       setLoading(true);
       
-      // Thử đọc từ GitHub trước
+      // Thử đọc từ GitHub trước với cache busting
       try {
-        const response = await fetch('https://raw.githubusercontent.com/hoangminhduc13012000/changemoney/main/public/assets/orders.json');
+        const timestamp = new Date().getTime();
+        const response = await fetch(`https://raw.githubusercontent.com/hoangminhduc13012000/changemoney/main/public/assets/orders.json?t=${timestamp}`, {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
         if (response.ok) {
           const ordersData = await response.json();
           setOrders(ordersData || []);
@@ -124,14 +131,20 @@ export default function AdminPage() {
       );
       setOrders(updatedOrders);
 
+      // Lưu vào localStorage ngay lập tức
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+
       // Thử lưu vào GitHub
       try {
         await saveOrdersToGitHub(updatedOrders);
         alert('✅ Đã cập nhật trạng thái đơn hàng và lưu vào GitHub!');
+        
+        // Đợi 2 giây rồi tải lại để đảm bảo đồng bộ
+        setTimeout(() => {
+          loadOrders();
+        }, 2000);
       } catch (error) {
-        console.log('Không thể lưu vào GitHub, lưu vào localStorage:', error);
-        // Fallback: Lưu vào localStorage
-        localStorage.setItem('orders', JSON.stringify(updatedOrders));
+        console.log('Không thể lưu vào GitHub, chỉ lưu localStorage:', error);
         alert('✅ Đã cập nhật trạng thái đơn hàng (lưu localStorage)!');
       }
     } catch (error) {
@@ -394,7 +407,9 @@ export default function AdminPage() {
           
           <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
             <p className="text-sm text-yellow-800">
-              <strong>📝 Lưu ý:</strong> Dữ liệu được lưu vào GitHub repository và đồng bộ với localStorage. Tất cả thiết bị có thể xem được.
+              <strong>📝 Lưu ý:</strong> Dữ liệu được lưu vào GitHub repository và đồng bộ với localStorage. 
+              <br />
+              <strong>⏰ Quan trọng:</strong> Sau khi cập nhật trạng thái, hãy đợi 10-30 giây rồi nhấn "Tải lại" trên thiết bị khác để thấy thay đổi.
             </p>
           </div>
         </div>

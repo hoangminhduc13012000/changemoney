@@ -87,7 +87,7 @@ export default function Home() {
       try {
         // Thử lưu vào GitHub (cần token)
         await saveToGitHub(orderData);
-        alert('✅ Đơn hàng đã được lưu thành công! Mã đơn hàng: ' + orderData.id);
+        alert('✅ Đơn hàng đã được lưu thành công vào GitHub! Mã đơn hàng: ' + orderData.id);
       } catch (error) {
         console.log('Không thể lưu vào GitHub, lưu vào localStorage:', error);
         // Fallback: Lưu vào localStorage
