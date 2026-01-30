@@ -114,39 +114,99 @@ export default function AdminPage() {
     }
   };
 
-  const updateOrderStatus = (orderId: string, newStatus: string) => {
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const savedOrders = localStorage.getItem('orders');
-      if (!savedOrders) return;
-
-      const orders = JSON.parse(savedOrders);
-      const updatedOrders = orders.map((order: any) => 
+      // Cập nhật trong state local trước
+      const updatedOrders = orders.map((order) => 
         order.id === orderId 
           ? { ...order, status: newStatus, updatedAt: new Date().toLocaleString('vi-VN') }
           : order
       );
-
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
       setOrders(updatedOrders);
-      alert('✅ Đã cập nhật trạng thái đơn hàng!');
+
+      // Thử lưu vào GitHub
+      try {
+        await saveOrdersToGitHub(updatedOrders);
+        alert('✅ Đã cập nhật trạng thái đơn hàng và lưu vào GitHub!');
+      } catch (error) {
+        console.log('Không thể lưu vào GitHub, lưu vào localStorage:', error);
+        // Fallback: Lưu vào localStorage
+        localStorage.setItem('orders', JSON.stringify(updatedOrders));
+        alert('✅ Đã cập nhật trạng thái đơn hàng (lưu localStorage)!');
+      }
     } catch (error) {
       console.error('Lỗi cập nhật trạng thái:', error);
       alert('❌ Có lỗi xảy ra khi cập nhật trạng thái!');
     }
   };
 
-  const clearAllOrders = () => {
+  const clearAllOrders = async () => {
     if (!confirm('Bạn có chắc chắn muốn xóa TẤT CẢ đơn hàng? Hành động này không thể hoàn tác!')) {
       return;
     }
 
     try {
-      localStorage.removeItem('orders');
+      // Cập nhật state local trước
       setOrders([]);
-      alert('✅ Đã xóa tất cả đơn hàng!');
+
+      // Thử lưu vào GitHub
+      try {
+        await saveOrdersToGitHub([]);
+        alert('✅ Đã xóa tất cả đơn hàng và cập nhật GitHub!');
+      } catch (error) {
+        console.log('Không thể lưu vào GitHub, lưu vào localStorage:', error);
+        // Fallback: Xóa localStorage
+        localStorage.removeItem('orders');
+        alert('✅ Đã xóa tất cả đơn hàng (localStorage)!');
+      }
     } catch (error) {
       console.error('Lỗi xóa đơn hàng:', error);
       alert('❌ Có lỗi xảy ra khi xóa đơn hàng!');
+    }
+  };
+
+  const saveOrdersToGitHub = async (ordersData: Order[]) => {
+    // GitHub API để lưu vào file orders.json
+    const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+    const REPO_OWNER = 'hoangminhduc13012000';
+    const REPO_NAME = 'changemoney';
+    const FILE_PATH = 'public/assets/orders.json';
+
+    if (!GITHUB_TOKEN) {
+      throw new Error('GitHub token not configured');
+    }
+
+    // Lấy file hiện tại để có SHA
+    const getResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    });
+
+    let sha = '';
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      sha = fileData.sha;
+    }
+
+    // Cập nhật file
+    const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Update orders data - ${new Date().toLocaleString('vi-VN')}`,
+        content: btoa(JSON.stringify(ordersData, null, 2)),
+        sha: sha,
+      }),
+    });
+
+    if (!updateResponse.ok) {
+      throw new Error('Failed to update GitHub file');
     }
   };
 
@@ -213,7 +273,7 @@ export default function AdminPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               placeholder="Mật khẩu admin"
               className="w-full p-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 font-semibold bg-white placeholder-gray-600"
             />
