@@ -6,9 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  // Tạm thời bỏ basePath để test
-  // basePath: process.env.NODE_ENV === 'production' ? '/changemoney' : '',
-  // assetPrefix: process.env.NODE_ENV === 'production' ? '/changemoney/' : '',
+  basePath: '/changemoney',
+  assetPrefix: '/changemoney/',
 };
 
 export default nextConfig;
