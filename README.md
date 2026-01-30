@@ -25,6 +25,10 @@
 - **20k**: 13% phí dịch vụ
 - **10k**: 12% phí dịch vụ
 
+## 🚀 Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/hoangminhduc13012000/changemoney)
+
 ## 🚀 Cài đặt và chạy
 
 ```bash

@@ -16,6 +16,7 @@ interface Order {
   address: string;
   note: string;
   status: string;
+  feePercentage?: number;
 }
 
 export default function AdminPage() {
@@ -24,7 +25,6 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Mật khẩu admin đơn giản (trong thực tế nên dùng authentication phức tạp hơn)
   const ADMIN_PASSWORD = 'admin123';
 
   const handleLogin = () => {
@@ -36,103 +36,98 @@ export default function AdminPage() {
     }
   };
 
-  const loadOrders = async () => {
+  const loadOrders = () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/orders');
-      const data = await response.json();
-      
-      if (data.success) {
-        setOrders(data.orders);
+      const savedOrders = localStorage.getItem('orders');
+      if (savedOrders) {
+        const ordersData = JSON.parse(savedOrders);
+        setOrders(ordersData);
       } else {
-        console.error('Lỗi tải đơn hàng:', data.error);
         setOrders([]);
       }
     } catch (error) {
-      console.error('Lỗi kết nối API:', error);
+      console.error('Lỗi khi tải đơn hàng:', error);
       setOrders([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const exportToExcel = async () => {
+  const exportToExcel = () => {
     try {
-      const response = await fetch('/api/orders/export');
-      
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `don-hang-li-xi-${new Date().toISOString().split('T')[0]}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        alert('✅ Đã tải xuống file Excel thành công!');
-      } else {
-        const errorData = await response.json();
-        alert(`❌ Lỗi: ${errorData.error}`);
+      if (orders.length === 0) {
+        alert('Không có đơn hàng nào để xuất!');
+        return;
       }
+
+      const excelData = orders.map((order) => ({
+        'ID Đơn Hàng': order.id,
+        'Thời Gian': order.createdAt,
+        'Tên Khách Hàng': order.customerName,
+        'Số Điện Thoại': order.phoneNumber,
+        'Mệnh Giá': order.denominationLabel,
+        'Số Lượng Tờ': order.quantity,
+        'Giá Trị Tiền Đổi': order.subtotalFormatted,
+        'Tỷ Lệ Phí': order.feePercentage ? `${order.feePercentage}%` : '12%',
+        'Phí Dịch Vụ': order.feeFormatted,
+        'Tổng Thanh Toán': order.totalFormatted,
+        'Địa Chỉ Giao Hàng': order.address,
+        'Ghi Chú': order.note,
+        'Trạng Thái': order.status
+      }));
+
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      const colWidths = [
+        { wch: 15 }, { wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, 
+        { wch: 12 }, { wch: 18 }, { wch: 12 }, { wch: 18 }, { wch: 18 }, 
+        { wch: 40 }, { wch: 30 }, { wch: 15 }
+      ];
+      worksheet['!cols'] = colWidths;
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Đơn Hàng Lì Xì');
+      const fileName = `don-hang-li-xi-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+      
+      alert('✅ Đã tải xuống file Excel thành công!');
     } catch (error) {
       console.error('Lỗi xuất Excel:', error);
       alert('❌ Có lỗi xảy ra khi xuất Excel!');
     }
   };
 
-  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+  const updateOrderStatus = (orderId: string, newStatus: string) => {
     try {
-      const response = await fetch('/api/orders', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderId, status: newStatus }),
-      });
+      const savedOrders = localStorage.getItem('orders');
+      if (!savedOrders) return;
 
-      const result = await response.json();
+      const orders = JSON.parse(savedOrders);
+      const updatedOrders = orders.map((order: any) => 
+        order.id === orderId 
+          ? { ...order, status: newStatus, updatedAt: new Date().toLocaleString('vi-VN') }
+          : order
+      );
 
-      if (result.success) {
-        // Cập nhật state local
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
-            order.id === orderId 
-              ? { ...order, status: newStatus }
-              : order
-          )
-        );
-        
-        // Cập nhật file Excel
-        await fetch('/api/orders/export', { method: 'POST' });
-        
-        alert('✅ Đã cập nhật trạng thái đơn hàng!');
-      } else {
-        alert(`❌ Lỗi: ${result.error}`);
-      }
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+      setOrders(updatedOrders);
+      alert('✅ Đã cập nhật trạng thái đơn hàng!');
     } catch (error) {
       console.error('Lỗi cập nhật trạng thái:', error);
       alert('❌ Có lỗi xảy ra khi cập nhật trạng thái!');
     }
   };
 
-  const clearAllOrders = async () => {
+  const clearAllOrders = () => {
     if (!confirm('Bạn có chắc chắn muốn xóa TẤT CẢ đơn hàng? Hành động này không thể hoàn tác!')) {
       return;
     }
 
     try {
-      const response = await fetch('/api/orders', { method: 'DELETE' });
-      const data = await response.json();
-      
-      if (data.success) {
-        // Cập nhật lại file Excel sau khi xóa
-        await fetch('/api/orders/export', { method: 'POST' });
-        alert('✅ Đã xóa tất cả đơn hàng và cập nhật file Excel!');
-        setOrders([]);
-      } else {
-        alert(`❌ Lỗi: ${data.error}`);
-      }
+      localStorage.removeItem('orders');
+      setOrders([]);
+      alert('✅ Đã xóa tất cả đơn hàng!');
     } catch (error) {
       console.error('Lỗi xóa đơn hàng:', error);
       alert('❌ Có lỗi xảy ra khi xóa đơn hàng!');
@@ -144,7 +139,6 @@ export default function AdminPage() {
     const completedOrders = orders.filter(order => order.status === 'Hoàn tất').length;
     const pendingOrders = orders.filter(order => order.status === 'Chờ xử lý').length;
     
-    // Tính tổng doanh thu (tất cả đơn)
     const totalRevenue = orders.reduce((sum, order) => {
       if (order.totalFormatted) {
         const amount = parseFloat(order.totalFormatted.replace(/[^\d]/g, ''));
@@ -153,7 +147,6 @@ export default function AdminPage() {
       return sum;
     }, 0);
 
-    // Tính tổng tiền gốc đã giao (chỉ đơn hoàn tất)
     const totalDeliveredAmount = orders
       .filter(order => order.status === 'Hoàn tất')
       .reduce((sum, order) => {
@@ -164,7 +157,6 @@ export default function AdminPage() {
         return sum;
       }, 0);
 
-    // Tính tổng tiền lời đã nhận (chỉ đơn hoàn tất)
     const totalProfit = orders
       .filter(order => order.status === 'Hoàn tất')
       .reduce((sum, order) => {
@@ -185,7 +177,6 @@ export default function AdminPage() {
     };
   };
 
-  // Tự động tải đơn hàng khi component mount
   useEffect(() => {
     if (isAuthenticated) {
       loadOrders();
@@ -219,7 +210,7 @@ export default function AdminPage() {
           </div>
           
           <div className="mt-4 text-center text-sm text-gray-500">
-            <p>Mật khẩu mặc định: admin123</p>
+            <p></p>
           </div>
         </div>
       </div>
@@ -230,7 +221,6 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
       <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 shadow-lg">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center">
@@ -306,14 +296,6 @@ export default function AdminPage() {
               📊 Tải Excel ({orders.length} đơn)
             </button>
             
-            <a
-              href="/assets/orders.xlsx"
-              download
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold"
-            >
-              📁 Xem File Excel Cố Định
-            </a>
-            
             <button
               onClick={clearAllOrders}
               disabled={orders.length === 0}
@@ -336,7 +318,7 @@ export default function AdminPage() {
           
           <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
             <p className="text-sm text-yellow-800">
-              <strong>📝 Lưu ý:</strong> File Excel cố định được lưu tại <code>/public/assets/orders.xlsx</code> và được cập nhật tự động mỗi khi có đơn hàng mới.
+              <strong>📝 Lưu ý:</strong> Dữ liệu được lưu trong localStorage của trình duyệt. Xóa cache sẽ mất dữ liệu.
             </p>
           </div>
         </div>
@@ -424,7 +406,6 @@ export default function AdminPage() {
             <h2 className="text-2xl font-bold text-gray-800 mb-6">📈 Báo Cáo Chi Tiết</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Thống kê theo trạng thái */}
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg">
                 <h3 className="text-lg font-bold text-blue-800 mb-4">📊 Thống Kê Theo Trạng Thái</h3>
                 <div className="space-y-3">
@@ -449,7 +430,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Thống kê tài chính */}
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-lg">
                 <h3 className="text-lg font-bold text-green-800 mb-4">💰 Thống Kê Tài Chính</h3>
                 <div className="space-y-3">

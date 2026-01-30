@@ -64,6 +64,8 @@ export default function Home() {
     try {
       // Tạo dữ liệu đơn hàng
       const orderData = {
+        id: Date.now().toString(),
+        createdAt: new Date().toLocaleString('vi-VN'),
         denomination: orderDetails.denomination,
         denominationLabel: formatCurrency(orderDetails.denomination),
         quantity: orderDetails.quantity,
@@ -78,41 +80,34 @@ export default function Home() {
         total: total,
         totalFormatted: formatCurrency(total),
         address: orderDetails.address,
-        note: orderDetails.note || 'Không có'
+        note: orderDetails.note || 'Không có',
+        status: 'Chờ xử lý'
       };
 
-      // Gửi đơn hàng lên server để lưu vào file
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
+      // Lấy đơn hàng hiện có từ localStorage
+      const existingOrders = localStorage.getItem('orders');
+      const orders = existingOrders ? JSON.parse(existingOrders) : [];
+
+      // Thêm đơn hàng mới
+      orders.push(orderData);
+
+      // Lưu vào localStorage
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      alert('✅ Đơn hàng đã được lưu thành công! Mã đơn hàng: ' + orderData.id);
+      
+      // Reset form
+      setOrderDetails({
+        denomination: 0,
+        quantity: 1,
+        customerName: '',
+        phoneNumber: '',
+        address: '',
+        note: ''
       });
+      setSelectedDenomination(null);
+      return true;
 
-      const result = await response.json();
-
-      if (result.success) {
-        // Cập nhật file Excel cố định
-        await fetch('/api/orders/export', { method: 'POST' });
-        
-        alert('✅ Đơn hàng đã được lưu vào file thành công! Mã đơn hàng: ' + result.orderId);
-        
-        // Reset form
-        setOrderDetails({
-          denomination: 0,
-          quantity: 1,
-          customerName: '',
-          phoneNumber: '',
-          address: '',
-          note: ''
-        });
-        setSelectedDenomination(null);
-        return true;
-      } else {
-        alert('❌ Lỗi: ' + result.error);
-        return false;
-      }
     } catch (error) {
       console.error('Lỗi khi lưu đơn hàng:', error);
       alert('❌ Có lỗi xảy ra khi lưu đơn hàng. Vui lòng thử lại!');
@@ -352,7 +347,7 @@ export default function Home() {
                       <li>• Giao hàng trong ngày</li>
                       <li>• Thanh toán khi nhận hàng</li>
                       <li>• Bảo đảm uy tín, chất lượng</li>
-                      <li>• <strong>Đơn hàng sẽ được lưu vào file Excel cố định</strong></li>
+                      <li>• <strong>Đơn hàng sẽ được lưu trong trình duyệt (localStorage)</strong></li>
                     </ul>
                   </div>
                 </div>
