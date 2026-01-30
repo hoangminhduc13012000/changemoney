@@ -36,9 +36,25 @@ export default function AdminPage() {
     }
   };
 
-  const loadOrders = () => {
+  const loadOrders = async () => {
     try {
       setLoading(true);
+      
+      // Thử đọc từ GitHub trước
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/hoangminhduc13012000/changemoney/main/public/assets/orders.json');
+        if (response.ok) {
+          const ordersData = await response.json();
+          setOrders(ordersData || []);
+          // Đồng bộ với localStorage
+          localStorage.setItem('orders', JSON.stringify(ordersData || []));
+          return;
+        }
+      } catch (error) {
+        console.log('Không thể đọc từ GitHub, đọc từ localStorage:', error);
+      }
+
+      // Fallback: Đọc từ localStorage
       const savedOrders = localStorage.getItem('orders');
       if (savedOrders) {
         const ordersData = JSON.parse(savedOrders);
@@ -318,7 +334,7 @@ export default function AdminPage() {
           
           <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
             <p className="text-sm text-yellow-800">
-              <strong>📝 Lưu ý:</strong> Dữ liệu được lưu trong localStorage của trình duyệt. Xóa cache sẽ mất dữ liệu.
+              <strong>📝 Lưu ý:</strong> Dữ liệu được lưu vào GitHub repository và đồng bộ với localStorage. Tất cả thiết bị có thể xem được.
             </p>
           </div>
         </div>

@@ -84,17 +84,19 @@ export default function Home() {
         status: 'Chờ xử lý'
       };
 
-      // Lấy đơn hàng hiện có từ localStorage
-      const existingOrders = localStorage.getItem('orders');
-      const orders = existingOrders ? JSON.parse(existingOrders) : [];
-
-      // Thêm đơn hàng mới
-      orders.push(orderData);
-
-      // Lưu vào localStorage
-      localStorage.setItem('orders', JSON.stringify(orders));
-
-      alert('✅ Đơn hàng đã được lưu thành công! Mã đơn hàng: ' + orderData.id);
+      try {
+        // Thử lưu vào GitHub (cần token)
+        await saveToGitHub(orderData);
+        alert('✅ Đơn hàng đã được lưu thành công! Mã đơn hàng: ' + orderData.id);
+      } catch (error) {
+        console.log('Không thể lưu vào GitHub, lưu vào localStorage:', error);
+        // Fallback: Lưu vào localStorage
+        const existingOrders = localStorage.getItem('orders');
+        const orders = existingOrders ? JSON.parse(existingOrders) : [];
+        orders.push(orderData);
+        localStorage.setItem('orders', JSON.stringify(orders));
+        alert('✅ Đơn hàng đã được lưu vào localStorage! Mã đơn hàng: ' + orderData.id);
+      }
       
       // Reset form
       setOrderDetails({
@@ -112,6 +114,58 @@ export default function Home() {
       console.error('Lỗi khi lưu đơn hàng:', error);
       alert('❌ Có lỗi xảy ra khi lưu đơn hàng. Vui lòng thử lại!');
       return false;
+    }
+  };
+
+  const saveToGitHub = async (orderData: any) => {
+    // GitHub API để lưu vào file orders.json
+    const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN; // Cần thiết lập
+    const REPO_OWNER = 'hoangminhduc13012000';
+    const REPO_NAME = 'changemoney';
+    const FILE_PATH = 'public/assets/orders.json';
+
+    if (!GITHUB_TOKEN) {
+      throw new Error('GitHub token not configured');
+    }
+
+    // Lấy file hiện tại
+    const getResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    });
+
+    let existingOrders = [];
+    let sha = '';
+
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      const content = atob(fileData.content);
+      existingOrders = JSON.parse(content);
+      sha = fileData.sha;
+    }
+
+    // Thêm đơn hàng mới
+    existingOrders.push(orderData);
+
+    // Cập nhật file
+    const updateResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Add new order: ${orderData.id}`,
+        content: btoa(JSON.stringify(existingOrders, null, 2)),
+        sha: sha,
+      }),
+    });
+
+    if (!updateResponse.ok) {
+      throw new Error('Failed to update GitHub file');
     }
   };
 
@@ -347,7 +401,7 @@ export default function Home() {
                       <li>• Giao hàng trong ngày</li>
                       <li>• Thanh toán khi nhận hàng</li>
                       <li>• Bảo đảm uy tín, chất lượng</li>
-                      <li>• <strong>Đơn hàng sẽ được lưu trong trình duyệt (localStorage)</strong></li>
+                      <li>• <strong>Đơn hàng sẽ được lưu vào GitHub (hoặc localStorage nếu không có kết nối)</strong></li>
                     </ul>
                   </div>
                 </div>
